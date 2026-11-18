@@ -1,0 +1,11 @@
+name: check
+on:
+  push:
+    branches: [push-test]
+jobs:
+  hello:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - run: echo "ok"
