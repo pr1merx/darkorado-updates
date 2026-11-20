@@ -1,0 +1,33 @@
+# Posts the latest Darkorado update in Discord again (for testing the #updates webhook).
+name: Announce latest update
+on: workflow_dispatch
+permissions:
+  contents: read
+jobs:
+  post:
+    runs-on: ubuntu-latest
+    env:
+      DISCORD_UPDATES_WEBHOOK: ${{ secrets.DISCORD_UPDATES_WEBHOOK }}
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Post the latest update in Discord
+        run: |
+          set -e
+          case "$DISCORD_UPDATES_WEBHOOK" in
+            https://discord.com/api/webhooks/*|https://discordapp.com/api/webhooks/*) ;;
+            *) echo "The DISCORD_UPDATES_WEBHOOK secret must be the full webhook link (https://discord.com/api/webhooks/...)."; exit 1 ;;
+          esac
+          gh release view --repo "$GITHUB_REPOSITORY" --json tagName,body > /tmp/rel.json
+          python3 - <<'PY'
+          import json
+          r = json.load(open('/tmp/rel.json'))
+          v = r['tagName'].lstrip('v')
+          items = [l.strip()[2:] for l in r['body'].splitlines() if l.strip().startswith('- ')]
+          desc = '\n'.join('• ' + i for i in items) or 'Fixes and improvements.'
+          payload = {"username": "Darkorado", "allowed_mentions": {"parse": []},
+                     "embeds": [{"color": 0xE879F9, "title": f"Darkorado {v} is out", "description": desc,
+                                 "footer": {"text": "Updates install by themselves: just restart Darkorado."}}]}
+          open('/tmp/payload.json', 'w').write(json.dumps(payload))
+          PY
+          curl -sS --fail -H "Content-Type: application/json" --data @/tmp/payload.json "$DISCORD_UPDATES_WEBHOOK" > /dev/null
+          echo "Posted."
