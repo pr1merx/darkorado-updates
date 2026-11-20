@@ -10,6 +10,7 @@ jobs:
       DISCORD_UPDATES_WEBHOOK: ${{ secrets.DISCORD_UPDATES_WEBHOOK }}
       GH_TOKEN: ${{ github.token }}
     steps:
+      - uses: actions/checkout@v4
       - name: Post the latest update in Discord
         run: |
           set -e
@@ -18,16 +19,7 @@ jobs:
             *) echo "The DISCORD_UPDATES_WEBHOOK secret must be the full webhook link (https://discord.com/api/webhooks/...)."; exit 1 ;;
           esac
           gh release view --repo "$GITHUB_REPOSITORY" --json tagName,body > /tmp/rel.json
-          python3 - <<'PY'
-          import json
-          r = json.load(open('/tmp/rel.json'))
-          v = r['tagName'].lstrip('v')
-          items = [l.strip()[2:] for l in r['body'].splitlines() if l.strip().startswith('- ')]
-          desc = '\n'.join('• ' + i for i in items) or 'Fixes and improvements.'
-          payload = {"username": "Darkorado", "allowed_mentions": {"parse": []},
-                     "embeds": [{"color": 0xE879F9, "title": f"Darkorado {v} is out", "description": desc,
-                                 "footer": {"text": "Updates install by themselves: just restart Darkorado."}}]}
-          open('/tmp/payload.json', 'w').write(json.dumps(payload))
-          PY
-          curl -sS --fail -H "Content-Type: application/json" --data @/tmp/payload.json "$DISCORD_UPDATES_WEBHOOK" > /dev/null
+          python3 -c "import json; r=json.load(open('/tmp/rel.json')); open('/tmp/notes.md','w').write(r['body']); open('/tmp/v','w').write(r['tagName'].lstrip('v'))"
+          python3 .github/post-update.py "$(cat /tmp/v)" /tmp/notes.md /tmp/payload.json
+          curl -sS --fail -F "payload_json=</tmp/payload.json" -F "files[0]=@.github/darkorado-icon.png;filename=darkorado.png" "$DISCORD_UPDATES_WEBHOOK" > /dev/null
           echo "Posted."
