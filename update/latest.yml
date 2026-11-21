@@ -1,8 +1,8 @@
-version: 1.2.2
+version: 1.3.0
 files:
-  - url: https://github.com/pr1merx/darkorado-updates/releases/download/v1.2.2/Darkorado-Setup.exe
-    sha512: M52pHFwRTkyUzOKSO1J1n2dKzBRuk+adSdd0FRlvol5QMwsAJfjaKe4HAh1AuRtnDFjSkvvrq7d4Afq1UmvVUw==
-    size: 121444316
-path: https://github.com/pr1merx/darkorado-updates/releases/download/v1.2.2/Darkorado-Setup.exe
-sha512: M52pHFwRTkyUzOKSO1J1n2dKzBRuk+adSdd0FRlvol5QMwsAJfjaKe4HAh1AuRtnDFjSkvvrq7d4Afq1UmvVUw==
-releaseDate: '2026-11-21T15:20:47.602Z'
+  - url: https://github.com/pr1merx/darkorado-updates/releases/download/v1.3.0/Darkorado-Setup.exe
+    sha512: GpkTlKxZqDnEafSUJuEK92FSHMzrjkf5y5uLD1kCBGnDothqLStgjdIEyu8yDtZOuY55DiMX8qR/AnJ1cEdoBw==
+    size: 121449960
+path: https://github.com/pr1merx/darkorado-updates/releases/download/v1.3.0/Darkorado-Setup.exe
+sha512: GpkTlKxZqDnEafSUJuEK92FSHMzrjkf5y5uLD1kCBGnDothqLStgjdIEyu8yDtZOuY55DiMX8qR/AnJ1cEdoBw==
+releaseDate: '2026-11-21T16:44:45.221Z'
